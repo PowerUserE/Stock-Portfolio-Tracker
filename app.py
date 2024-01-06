@@ -4,7 +4,6 @@ import streamlit as st1
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objs as go
 from streamlit_extras.metric_cards import style_metric_cards
 import time
 import yfinance as yf
