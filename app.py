@@ -1,11 +1,13 @@
 
 
+import streamlit as st1
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 from streamlit_extras.metric_cards import style_metric_cards
 import time
+import yfinance as yf
 
 st.set_page_config(
     page_title="Stock Portfolio Tracker",
@@ -14,6 +16,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 st.header("Stock Portfolio Tracker")
+
+
+def fetch_realtime_price(ticker):
+    stock = yf.Ticker(ticker)
+    data = stock.history(period='1d')
+    current_price = data['Close'].iloc[-1]
+    return current_price
 
 
 @st.cache_data
@@ -30,6 +39,9 @@ ticker = st.sidebar.multiselect(
     "SELECT TICKER", options=df["Ticker"].unique(), default=df["Ticker"].unique())
 
 df_selection = df.query("Ticker==@ticker")
+# show df_selection
+# st.dataframe(df["Ticker"].unique())
+
 
 with st.sidebar:
     st.header("Configuration")
@@ -49,36 +61,43 @@ with st.sidebar:
             df = load_data("portfolio_sample.csv")
 
 
-with st.expander("Uploaded Data Preview"):
-    st.dataframe(df.head(10))
-
-
 def Home():
+    current_prices = []
+    for ticker in df["Ticker"].unique():
+        current_prices.append(fetch_realtime_price(ticker))
 
     total_investment = df_selection['Purchase Price'].sum()
     investment_mode = df_selection['Purchase Price'].mode().iloc[0]
     investment_mean = df_selection['Purchase Price'].mean()
-    investment_median = df_selection['Purchase Price'].median()
+    gains_losses = sum(current_prices) - df_selection['Purchase Price'].sum()
+    percentage_returns = (gains_losses / total_investment) * \
+        100 if total_investment != 0 else 0
+
+    # Add current prices to df_selection
+    df_selection['Current Price'] = current_prices
 
     st.info('Portfolio Summary')
     total1, total2, total3, total4, total5 = st.columns(5, gap='small')
     with total1:
         st.info('Total Investment', icon="💰")
-        st.metric(label="Total Investment", value=f"{total_investment:,.2f}")
+        st.metric(label="Total Investment",
+                  value=f"${total_investment:,.2f}", delta=f'${total_investment:,.2f}')
     with total2:
         st.info('Most Investment', icon="💰")
-        st.metric(label="Most Investment", value=f"{investment_mode:,.2f}")
+        st.metric(label="Most Investment",
+                  value=f"${investment_mode:,.2f}", delta=f'${investment_mode:,.2f}')
     with total3:
         st.info('Average Investment', icon="💰")
-        st.metric(label="Average Investment", value=f"{investment_mean:,.2f}")
+        st.metric(label="Average Investment",
+                  value=f"${investment_mean:,.2f}", delta=f'${investment_mean:,.2f}')
     with total4:
-        st.info('Median Investment', icon="💰")
-        st.metric(label="Median Investment", value=f"{investment_median:,.2f}")
+        st.info('Gains/Losses', icon="💰")
+        st.metric(label="Gains/Losses",
+                  value=f"${gains_losses:,.2f}", delta=f'${gains_losses:,.2f}')
     with total5:
-        st.info('Total Quantity', icon="💰")
-        # st.metric(label="Total Quantity", value=numerize(
-        #     df_selection['Quantity'].sum()))
-        st.metric(label="Total Quantity", value=df_selection['Quantity'].sum())
+        st.info('Percentage Returns', icon="💰")
+        st.metric(label="Percentage Returns",
+                  value=f"{percentage_returns:,.2f}%", delta=f'{percentage_returns:,.2f}%')
 
     style_metric_cards(
         # set the background color to black
@@ -87,6 +106,25 @@ def Home():
         border_color="#000000",
         box_shadow="#F71938"
     )
+
+
+def realtime():
+    ##############################
+    # Real-time Updates for 10
+    with st.expander("Click here to see Real-Time Updates"):
+        st1.info('Real-Time Updates')
+        columns = st1.columns(5, gap='small')
+
+        for index, row in df_selection.iterrows():
+            stock_ticker = row['Ticker']
+            current_price = fetch_realtime_price(stock_ticker)
+            price_change = (current_price - row['Purchase Price'])
+            percent_change = (price_change / row['Purchase Price']) * 100
+
+            with columns[index % 5]:  # Use modulo to distribute items across columns
+                st1.metric(label=stock_ticker,
+                           value=f"${current_price:,.2f}", delta=f"{percent_change:,.2f}%")
+    ##############################
 
 
 def showData():
@@ -128,7 +166,7 @@ def graphs():
 
 def Progressbar():
     # Assuming the S&P 500 value is 200000 trillion (just an example, replace with the actual value)
-    sp500_value = 200000
+    sp500_value = 20000
 
     st.markdown(
         """<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #99ff99 , #FFFF00)}</style>""", unsafe_allow_html=True)
@@ -162,10 +200,18 @@ def sideBar():
 selected_menu = sideBar()
 
 if selected_menu == "Home Page":
+    showData()
     Home()
     Progressbar()
     graphs()
-    showData()
+    realtime()
+
+    # Update the app every 30 seconds
+    # for _ in range(300):
+    #     realtime()
+    #     time.sleep(1)
+    #     st.experimental_rerun()
+
 
 if selected_menu == "Add Investment":
     st.subheader("Add Investment")
