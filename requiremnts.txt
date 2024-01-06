@@ -1,4 +1,4 @@
 yfinance==0.2.33
 pandas==1.5.3
 streamlit==1.28.1
-plotly @ file:///Users/cbousseau/work/recipes/ci_py311/plotly_1677953301864/work
+plotly==1.29.0
