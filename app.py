@@ -216,7 +216,6 @@ if selected_menu == "Add Investment":
     st.subheader("Add Investment")
     st.write("Add your investment details here")
 
-
 # Theme
 hide_st_style = """
 <style>
@@ -225,5 +224,35 @@ footer {visibility:hidden;}
 header {visibility:hidden;}
 </style>
 """
+# Apply dark theme using custom CSS styles
+dark_theme_styles = """
+<style>
+body {
+    color: white;
+    background-color: #1E1E1E;  /* Dark background color */
+}
+
+/* Sidebar styling */
+.sidebar .sidebar-content {
+    background-color: #333333;  /* Dark sidebar background color */
+}
+
+/* Metrics cards styling */
+.stMetricText {
+    color: white;
+}
+
+.stMetricDelta {
+    color: white;
+}
+
+/* Progress bar styling */
+.stProgressBar div div div div {
+    background-image: linear-gradient(to right, #99ff99, #FFFF00);
+}
+
+</style>
+"""
 
 st.markdown(hide_st_style, unsafe_allow_html=True)
+st.markdown(dark_theme_styles, unsafe_allow_html=True)
