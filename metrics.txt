@@ -1,0 +1,12 @@
+Symbol / Ticker
+Last Price
+Change + Change %
+Shares
+Market Value
+Unrealized Gain/Loss
+Investment Cost
+Weight % in Portfolio
+Trailing P/E
+EPS (TTM)
+Book Value
+52-week Range
