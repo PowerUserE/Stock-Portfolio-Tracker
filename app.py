@@ -280,7 +280,7 @@ if selected_menu == "Home Page":
     showData()
     Home()
     realtime()
-    # Progressbar()
+    Progressbar()
     graphs()
 
     realtime_table()
