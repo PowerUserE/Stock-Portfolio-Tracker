@@ -1,5 +1,9 @@
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://stock-portfolio-tracker.streamlit.app/)
+
 # Stock-Portfolio-Tracker
 
-Personal Project to Track and historically analyse options and stocks for a portfolio
+### Portfolio tracker to historically analyse options and stocks for a portfolio
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://stock-portfolio-tracker.streamlit.app/)
+# Try out the app!
+
+## https://stock-portfolio-tracker.streamlit.app/
