@@ -177,7 +177,6 @@ def get_stock_details(ticker, shares, purchase_price):
 
 
 def realtime_table():
-    st.header("test")
     details_df = create_empty_dataframe()
     for data in df.iterrows():
         ticker = data[1]['Ticker']
@@ -190,9 +189,7 @@ def realtime_table():
         # details = get_stock_details(
         #     ticker, total_investment, shares, purchase_price)
 
-    st.header("Portfolio Details")
-    st.subheader("Real-Time Updates")
-    st.write("Real-time updates for the stocks in your portfolio")
+    st.write("Portfolio Tracker")
 
     gd = GridOptionsBuilder.from_dataframe(details_df)
     gd.configure_pagination(enabled=True)
